@@ -4,9 +4,8 @@
 #
 # Copyright:: 2022, The Authors, All Rights Reserved.
 
-user 'nomad' do
-
-end
+user 'nomad'
+group 'nomad'
 
 remote_file "#{Chef::Config[:file_cache_path]}/nomad.zip" do
     source "https://releases.hashicorp.com/nomad/#{node['nomad']['version']}/nomad_#{node['nomad']['version']}_linux_#{node['nomad']['architecture']}.zip"
