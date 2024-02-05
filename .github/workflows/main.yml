@@ -11,30 +11,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.x
-
-    - name: Setup Gem Files
-      run: |
-        bundle install --jobs 4 --retry 3 # Install berks gem
+    - name: Install chef
+      uses: actionshub/chef-install@main
         
-    - name: Run Code Analysis using cookstyle
-      run: |
-        echo `pwd`
-        echo "\n"
-        chmod +x sca.sh
-        ./sca.sh
-
-    - name: Build and Bundle Cookbooks and dependencies
-      run: |
-        echo `pwd`
-        echo "\n"
-        chmod +x berks-vendor.sh
-        echo `ls -l`
-        ./berks-vendor.sh # Berks vendor cookbooks
-        
-    - name: Package cookbooks to upload to artifact repo or Upload cookbook Chef server using berks upload
-      run: |
-        echo "package cookbooks dumped in the `cookbook_cache` directory and store it to artifact repo, or upload cookbooks to Chef server using ‘berks upload’ command"
+    - name: Install cookbooks
+      run: berks vendor
