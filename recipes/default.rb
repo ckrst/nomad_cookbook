@@ -18,18 +18,12 @@ end
 
 archive_file 'nomad' do
     path "#{Chef::Config[:file_cache_path]}/nomad.zip"
-    destination '/tmp/'
+    destination '/usr/local/bin/nomad'
     action :extract
-    # not_if { ::File.exist?("/tmp/nomad") }
+    not_if { ::File.exist?("/usr/local/bin/nomad") }
 end
 
-bash 'move_nomad' do
-    cwd '/usr/local/bin'
-    code <<-EOH
-        cp /tmp/nomad /usr/local/bin/nomad
-    EOH
-    not_if { ::File.exist?('/usr/local/bin/nomad') }
-end
+
 
 template '/etc/systemd/system/nomad.service' do
     source 'nomad.service.erb'
