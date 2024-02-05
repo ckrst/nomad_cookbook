@@ -18,7 +18,7 @@ end
 
 archive_file 'nomad' do
     path "#{Chef::Config[:file_cache_path]}/nomad.zip"
-    destination '/tmp/nomad'
+    destination '/tmp/'
     action :extract
     not_if { ::File.exist?("/tmp/nomad") }
 end
