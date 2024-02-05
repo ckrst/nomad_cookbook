@@ -17,3 +17,5 @@ chef_version '>= 15.0'
 # a Supermarket.
 #
 # source_url 'https://github.com/<insert_org_here>/nomad_cookbook'
+
+depends 'docker', '11.3.0'

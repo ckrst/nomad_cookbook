@@ -14,3 +14,4 @@ run_list 'nomad_cookbook::default'
 
 # Specify a custom source for a single cookbook:
 cookbook 'nomad_cookbook', path: '.'
+cookbook 'docker', '~> 11.3.0', :supermarket
