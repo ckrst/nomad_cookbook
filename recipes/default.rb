@@ -23,15 +23,6 @@ archive_file 'nomad' do
     not_if { ::File.exist?("/usr/local/bin/nomad") }
 end
 
-
-
-template '/etc/systemd/system/nomad.service' do
-    source 'nomad.service.erb'
-    owner 'root'
-    group 'root'
-    mode '0755'
-end
-
 directory '/etc/nomad.d' do
     owner 'root'
     group 'root'
@@ -43,18 +34,16 @@ template '/etc/nomad.d/nomad.hcl' do
     group 'root'
 end
 
-template '/etc/nomad.d/server.hcl' do
+template '/etc/systemd/system/nomad.service' do
+    source 'nomad.service.erb'
     owner 'root'
     group 'root'
-end
-
-template '/etc/nomad.d/client.hcl' do
-    owner 'root'
-    group 'root'
+    mode '0755'
 end
 
 service 'nomad.service' do
     supports status: true, restart: true, reload: true
+    subscribes :reload, 'file[/etc/nomad]', :immediately
     action [:enable, :start]
 end
 
