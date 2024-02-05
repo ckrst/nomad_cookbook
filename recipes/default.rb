@@ -18,15 +18,15 @@ end
 
 archive_file 'nomad' do
     path "#{Chef::Config[:file_cache_path]}/nomad.zip"
-    destination '/tmp/'
+    destination '/tmp/nomad'
     action :extract
-    not_if { ::File.exist?("#{Chef::Config[:file_cache_path]}/nomad") }
+    not_if { ::File.exist?("/tmp/nomad") }
 end
 
 bash 'move_nomad' do
     cwd '/usr/local/bin'
     code <<-EOH
-        cp #{Chef::Config[:file_cache_path]}/nomad /usr/local/bin/nomad
+        cp /tmp/nomad /usr/local/bin/nomad
     EOH
     not_if { ::File.exist?('/usr/local/bin/nomad') }
 end
