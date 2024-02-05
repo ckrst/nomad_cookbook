@@ -26,7 +26,7 @@ end
 bash 'move_nomad' do
     cwd '/usr/local/bin'
     code <<-EOH
-        cp /tmp/nomad /usr/local/bin/nomad
+        cp #{Chef::Config[:file_cache_path]}/nomad /usr/local/bin/nomad
     EOH
     not_if { ::File.exist?('/usr/local/bin/nomad') }
 end
