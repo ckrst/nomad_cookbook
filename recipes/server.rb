@@ -5,5 +5,5 @@ template '/etc/nomad.d/server.hcl' do
     variables tplvars: {
         'bootstrap_expect' => node['nomad']['server']['bootstrap_expect'],
     }
-    notifies :action, service[nomad.service], :immediatly
+    notifies :action, 'service[nomad.service]', :immediately
 end
