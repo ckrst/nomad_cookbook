@@ -16,15 +16,41 @@ jobs:
         
     - name: Install cookbooks
       run: berks vendor
+
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Tests
         run: echo "Tests"
+
   release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
+
+    - name: Set tag name
+      id: tag
+      run: |
+        if [[ "${{ github.event_name }}" != "push" ]]; then
+          tag=v$(date +%Y%m%d.%H%M%S)
+        else
+          tag=$(basename "${{ github.ref }}")
+        fi
+        echo "tag=$tag" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: |
+        tag="${{ steps.tag.outputs.tag }}"
+        body="ruby/ruby@${{ needs.prepare.outputs.commit }}"
+        gh release create --draft "$tag" --title "$tag" --notes "$body"
+
     - name: Create Draft Release
       id: create_release
       uses: actions/create-release@v1
