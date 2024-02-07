@@ -7,17 +7,17 @@
 user 'nomad'
 group 'nomad'
 
-remote_file "#{Chef::Config[:file_cache_path]}/nomad.zip" do
+remote_file "/tmp/nomad.zip" do
     source "https://releases.hashicorp.com/nomad/#{node['nomad']['version']}/nomad_#{node['nomad']['version']}_linux_#{node['nomad']['architecture']}.zip"
     owner 'root'
     group 'root'
     mode '0755'
     action :create
-    not_if { ::File.exist?("#{Chef::Config[:file_cache_path]}/nomad.zip") }
+    not_if { ::File.exist?("/tmp/nomad.zip") }
 end
 
 archive_file 'nomad' do
-    path "#{Chef::Config[:file_cache_path]}/nomad.zip"
+    path "/tmp/nomad.zip"
     destination '/usr/local/bin/'
     action :extract
     not_if { ::File.exist?("/usr/local/bin/nomad") }
