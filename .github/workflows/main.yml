@@ -17,11 +17,14 @@ jobs:
     - name: Install cookbooks
       run: berks vendor
 
+    - name: Create archive
+      run: tar czf nomad_cookbook.tar.gz berks-cookbooks/nomad_cookbook
+
     - name: Publish artifact
       uses: actions/upload-artifact@master
       with:
           name: nomad_cookbook
-          path: berks-cookbooks/nomad_cookbook
+          path: nomad_cookbook.tar.gz
 
   test:
     needs: build
@@ -71,6 +74,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
           name: nomad_cookbook
+    - name: Upload Built Artifact
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: gh release upload "${{ needs.release.outputs.tag }}" "nomad_cookbook.tar.gz"
     - name: Publish Release
       env:
         GH_TOKEN: ${{ github.token }}
