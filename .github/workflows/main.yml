@@ -20,7 +20,8 @@ jobs:
       run: berks vendor
 
     - name: Create archive
-      run: tar czf nomad_cookbook.tar.gz berks-cookbooks/nomad_cookbook
+      run: tar czf nomad_cookbook.tar.gz nomad_cookbook
+      working-directory: berks-cookbooks
 
     - name: Publish artifact
       uses: actions/upload-artifact@master
