@@ -16,20 +16,23 @@ jobs:
         
     - name: Install cookbooks
       run: berks vendor
-  release:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - name: version
-      run: echo "::set-output name=version::$(./bin/azblogfilter --version)"
-      id: version
-    - name: release
-      uses: actions/create-release@v1
+      - name: Tests
+        run: echo "Tests"
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Create Draft Release
       id: create_release
-      with:
-        draft: false
-        prerelease: false
-        release_name: ${{ steps.version.outputs.version }}
-        tag_name: ${{ github.ref }}
-        body_path: CHANGELOG.md
+      uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: <tofill>
+        release_name: <tofill>
+        draft: true
+        prerelease: false
+    
