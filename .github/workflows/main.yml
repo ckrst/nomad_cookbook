@@ -17,12 +17,23 @@ jobs:
     - name: Install cookbooks
       run: berks vendor
 
+    - name: Publish artifact
+      uses: actions/upload-artifact@master
+      with:
+          name: nomad_cookbook
+          path: berks-cookbooks/nomad_cookbook
+
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Tests
         run: echo "Tests"
+
+      - name: Download state artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: nomad_cookbook
 
   release:
     name: Create GitHub Release
@@ -50,3 +61,24 @@ jobs:
         tag="${{ steps.tag.outputs.tag }}"
         body="ruby/ruby@${{ needs.prepare.outputs.commit }}"
         gh release create --draft "$tag" --title "$tag" --notes "$body"
+
+  publish:
+    name: Publish Release
+    needs: [release, build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download state artifact
+      uses: actions/download-artifact@v4
+      with:
+          name: nomad_cookbook
+    - name: Publish Release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: gh release edit "${{ needs.release.outputs.tag }}" --draft=false
+    - uses: eregon/keep-last-n-releases@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        n: 3
+        remove_tags_without_release: true
